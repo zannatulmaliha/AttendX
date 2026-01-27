@@ -1,103 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Generator - Teacher Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>AttendX - Teacher Dashboard</title>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="header-content">
-                <div class="user-info">
-                    <div class="logo-circle">
-                        <i data-lucide="qr-code"></i>
-                    </div>
-                    <div class="user-details">
-                        <h1>Teacher Dashboard</h1>
-                        <p>teacher@demo.com</p>
-                    </div>
-                </div>
-                <a href="#" class="logout-btn">
-                    <i data-lucide="log-out" width="16" height="16"></i>
-                    Logout
-                </a>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="nav-tabs">
-                <a href="index.html" class="nav-tab active">QR Generator</a>
-                <a href="classes.html" class="nav-tab">My Classes</a>
-                <a href="reports.html" class="nav-tab">Attendance Reports</a>
-            </nav>
-        </header>
-
-        <!-- Main Content -->
-        <main class="card-grid">
-            <!-- Left Column: Generate Form -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Generate QR Code</h2>
-                    <p class="card-description">Select a class to generate attendance QR code</p>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Select Class</label>
-                    <select class="form-select">
-                        <option>CS 101 - Introduction to Programming</option>
-                        <option>CS 201 - Data Structures</option>
-                        <option>CS 301 - Web Development</option>
-                    </select>
-                </div>
-
-                <div class="class-info">
-                    <div class="info-row">
-                        <span class="info-label">Class Name:</span>
-                        <span class="info-value">Introduction to Programming</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Code:</span>
-                        <span class="info-value">CS 101</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Schedule:</span>
-                        <span class="info-value">Mon, Wed, Fri 9:00 AM</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Students:</span>
-                        <span class="info-value">45</span>
-                    </div>
-                </div>
-
-                <button class="btn-primary">
-                    <i data-lucide="qr-code" width="18" height="18"></i>
-                    Generate New QR Code
-                </button>
-            </div>
-
-            <!-- Right Column: QR Display -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">QR Code</h2>
-                    <p class="card-description">Students can scan this code to mark attendance</p>
-                </div>
-
-                <div class="qr-placeholder-container">
-                    <div class="qr-placeholder-box">
-                        <i data-lucide="scan-line" class="qr-icon" style="font-size: 48px; width: 48px; height: 48px;"></i>
-                        <p>Select a class to generate QR code</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        lucide.createIcons();
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
+
 </html>
