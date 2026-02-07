@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+
 // Create a new class
 router.post('/', async (req, res) => {
     const newClass = new Class({
