@@ -1,43 +1,76 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QrCode, ScanLine } from 'lucide-react'
 
 function QRGenerator() {
-    const [classes] = useState([
-        {
-            id: 1,
-            code: 'CS 101',
-            name: 'Introduction to Programming',
-            schedule: 'Mon, Wed, Fri 9:00 AM',
-            students: 45
-        },
-        {
-            id: 2,
-            code: 'CS 201',
-            name: 'Data Structures',
-            schedule: 'Tue, Thu 11:00 AM',
-            students: 38
-        },
-        {
-            id: 3,
-            code: 'CS 301',
-            name: 'Web Development',
-            schedule: 'Mon, Wed 2:00 PM',
-            students: 32
-        }
-    ])
-
-    const [selectedClass, setSelectedClass] = useState(classes[0])
+    const [classes, setClasses] = useState([])
+    const [selectedClass, setSelectedClass] = useState(null)
     const [qrGenerated, setQrGenerated] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    // Fetch classes from backend on component mount
+    useEffect(() => {
+        fetchClasses()
+    }, [])
+
+    const fetchClasses = async () => {
+        try {
+            setLoading(true)
+            const response = await fetch('http://localhost:5000/api/classes')
+            if (!response.ok) throw new Error('Failed to fetch classes')
+            const data = await response.json()
+            setClasses(data)
+            if (data.length > 0) {
+                setSelectedClass(data[0])
+            }
+            setError(null)
+        } catch (err) {
+            console.error('Error fetching classes:', err)
+            setError('Failed to load classes. Make sure the backend server is running.')
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleClassChange = (e) => {
-        const classId = parseInt(e.target.value)
-        const selected = classes.find(c => c.id === classId)
+        const classId = e.target.value
+        const selected = classes.find(c => (c._id || c.id) === classId)
         setSelectedClass(selected)
         setQrGenerated(false)
     }
 
     const handleGenerateQR = () => {
         setQrGenerated(true)
+    }
+
+    if (loading) {
+        return (
+            <div className="card">
+                <div className="empty-state">
+                    <p>Loading classes...</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="card">
+                <div className="empty-state">
+                    <p style={{ color: 'var(--danger)' }}>{error}</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (classes.length === 0) {
+        return (
+            <div className="card">
+                <div className="empty-state">
+                    <p>No classes available. Please add a class in "My Classes" first.</p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -51,38 +84,42 @@ function QRGenerator() {
 
                 <div className="form-group">
                     <label className="form-label">Select Class</label>
-                    <select className="form-select" value={selectedClass.id} onChange={handleClassChange}>
+                    <select className="form-select" value={selectedClass?._id || selectedClass?.id} onChange={handleClassChange}>
                         {classes.map(cls => (
-                            <option key={cls.id} value={cls.id}>
+                            <option key={cls._id || cls.id} value={cls._id || cls.id}>
                                 {cls.code} - {cls.name}
                             </option>
                         ))}
                     </select>
                 </div>
 
-                <div className="class-info">
-                    <div className="info-row">
-                        <span className="info-label">Class Name:</span>
-                        <span className="info-value">{selectedClass.name}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Code:</span>
-                        <span className="info-value">{selectedClass.code}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Schedule:</span>
-                        <span className="info-value">{selectedClass.schedule}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Students:</span>
-                        <span className="info-value">{selectedClass.students}</span>
-                    </div>
-                </div>
+                {selectedClass && (
+                    <>
+                        <div className="class-info">
+                            <div className="info-row">
+                                <span className="info-label">Class Name:</span>
+                                <span className="info-value">{selectedClass.name}</span>
+                            </div>
+                            <div className="info-row">
+                                <span className="info-label">Code:</span>
+                                <span className="info-value">{selectedClass.code}</span>
+                            </div>
+                            <div className="info-row">
+                                <span className="info-label">Schedule:</span>
+                                <span className="info-value">{selectedClass.schedule}</span>
+                            </div>
+                            <div className="info-row">
+                                <span className="info-label">Students:</span>
+                                <span className="info-value">{selectedClass.students}</span>
+                            </div>
+                        </div>
 
-                <button className="btn-primary" onClick={handleGenerateQR}>
-                    <QrCode size={18} />
-                    Generate New QR Code
-                </button>
+                        <button className="btn-primary" onClick={handleGenerateQR}>
+                            <QrCode size={18} />
+                            Generate New QR Code
+                        </button>
+                    </>
+                )}
             </div>
 
             {/* Right Column: QR Display */}
@@ -95,7 +132,7 @@ function QRGenerator() {
                 <div className="qr-placeholder-container">
                     <div className="qr-placeholder-box">
                         <ScanLine size={48} className="qr-icon" />
-                        <p>{qrGenerated ? `QR Code for ${selectedClass.code}` : 'Select a class to generate QR code'}</p>
+                        <p>{qrGenerated && selectedClass ? `QR Code for ${selectedClass.code}` : 'Select a class to generate QR code'}</p>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Users, Calendar, QrCode, X } from 'lucide-react'
+import { Plus, Users, Calendar, QrCode, X, Trash2 } from 'lucide-react'
 
 function MyClasses() {
     const [classes, setClasses] = useState([])
@@ -7,7 +7,8 @@ function MyClasses() {
     const [formData, setFormData] = useState({
         code: '',
         name: '',
-        schedule: ''
+        schedule: '',
+        students: 0
     })
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -44,7 +45,7 @@ function MyClasses() {
 
     const handleCloseModal = () => {
         setShowModal(false)
-        setFormData({ code: '', name: '', schedule: '' })
+        setFormData({ code: '', name: '', schedule: '', students: 0 })
     }
 
     const handleInputChange = (e) => {
@@ -65,7 +66,7 @@ function MyClasses() {
                     code: formData.code,
                     name: formData.name,
                     schedule: formData.schedule,
-                    students: 0
+                    students: parseInt(formData.students) || 0
                 })
             })
 
@@ -83,6 +84,48 @@ function MyClasses() {
             alert('Failed to create class. Make sure the backend server is running.')
         }
     }
+
+
+    const handleDeleteClass = async (classId) => {
+        console.log('Delete button clicked for class ID:', classId)
+
+        // Confirm before deleting
+        if (!window.confirm('Are you sure you want to delete this class? This action cannot be undone.')) {
+            console.log('User cancelled deletion')
+            return
+        }
+
+        console.log('User confirmed deletion, sending DELETE request...')
+
+        try {
+            const url = `http://localhost:5000/api/classes/${classId}`
+            console.log('DELETE URL:', url)
+
+            const response = await fetch(url, {
+                method: 'DELETE'
+            })
+
+            console.log('Response status:', response.status)
+            console.log('Response ok:', response.ok)
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}))
+                console.error('Delete failed with error:', errorData)
+                throw new Error('Failed to delete class')
+            }
+
+            const result = await response.json()
+            console.log('Delete successful:', result)
+
+            // Remove the class from local state
+            setClasses(prev => prev.filter(cls => (cls._id || cls.id) !== classId))
+            console.log('Class removed from UI')
+        } catch (err) {
+            console.error('Error deleting class:', err)
+            alert('Failed to delete class. Make sure the backend server is running.')
+        }
+    }
+
 
     return (
         <>
@@ -130,10 +173,24 @@ function MyClasses() {
                                 {cls.schedule}
                             </div>
 
-                            <button className="btn-outline" onClick={() => handleGenerateQR(cls._id || cls.id)}>
-                                <QrCode size={16} />
-                                Generate QR
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className="btn-outline" onClick={() => handleGenerateQR(cls._id || cls.id)} style={{ flex: 1 }}>
+                                    <QrCode size={16} />
+                                    Generate QR
+                                </button>
+                                <button
+                                    className="btn-outline"
+                                    onClick={() => handleDeleteClass(cls._id || cls.id)}
+                                    style={{
+                                        flex: 1,
+                                        color: 'var(--danger, #dc2626)',
+                                        borderColor: 'var(--danger, #dc2626)'
+                                    }}
+                                >
+                                    <Trash2 size={16} />
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -186,6 +243,20 @@ function MyClasses() {
                                     value={formData.schedule}
                                     onChange={handleInputChange}
                                     placeholder="e.g., Mon, Wed, Fri 9:00 AM"
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="students">Number of Students</label>
+                                <input
+                                    type="number"
+                                    id="students"
+                                    name="students"
+                                    value={formData.students}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., 30"
+                                    min="0"
                                     required
                                 />
                             </div>
