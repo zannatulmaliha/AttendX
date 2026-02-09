@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Reports - Teacher Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="logo-circle">
+                        <i data-lucide="qr-code"></i>
+                    </div>
+                    <div class="user-details">
+                        <h1>Teacher Dashboard</h1>
+                        <p>teacher@demo.com</p>
+                    </div>
+                </div>
+                <a href="#" class="logout-btn">
+                    <i data-lucide="log-out" width="16" height="16"></i>
+                    Logout
+                </a>
+            </div>
+
+            <nav class="nav-tabs">
+                <a href="index.html" class="nav-tab">QR Generator</a>
+                <a href="classes.html" class="nav-tab">My Classes</a>
+                <a href="reports.html" class="nav-tab active">Attendance Reports</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h2 class="card-title">Attendance Reports</h2>
+                <p class="card-description">View and download attendance statistics</p>
+            </div>
+
+            <div class="empty-state">
+                <i data-lucide="calendar-off" class="empty-icon" style="width: 64px; height: 64px;"></i>
+                <h3 class="empty-title">Attendance reporting coming soon</h3>
+                <p>Export data as CSV or PDF</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
