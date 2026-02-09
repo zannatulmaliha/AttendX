@@ -47,7 +47,9 @@ function Layout({ children }) {
             </header>
 
             {/* Main Content */}
-            <main>{children}</main>
+            <main>
+                {children}
+            </main>
         </div>
     )
 }

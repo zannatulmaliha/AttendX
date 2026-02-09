@@ -107,10 +107,15 @@ function MyClasses() {
             const url = `http://localhost:5000/api/classes/${classId}`
             console.log('DELETE URL:', url)
 
+            const token = localStorage.getItem('token')
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
+<<<<<<< HEAD
+                    'Authorization': `Bearer ${token}`
+=======
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                 }
             })
 
@@ -218,11 +223,12 @@ function MyClasses() {
 
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label htmlFor="code">Class Code</label>
+                                <label htmlFor="code" className="form-label">Class Code</label>
                                 <input
                                     type="text"
                                     id="code"
                                     name="code"
+                                    className="form-input"
                                     value={formData.code}
                                     onChange={handleInputChange}
                                     placeholder="e.g., CS 101"
@@ -231,11 +237,12 @@ function MyClasses() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="name">Class Name</label>
+                                <label htmlFor="name" className="form-label">Class Name</label>
                                 <input
                                     type="text"
                                     id="name"
                                     name="name"
+                                    className="form-input"
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     placeholder="e.g., Introduction to Programming"
@@ -244,11 +251,12 @@ function MyClasses() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="schedule">Schedule</label>
+                                <label htmlFor="schedule" className="form-label">Schedule</label>
                                 <input
                                     type="text"
                                     id="schedule"
                                     name="schedule"
+                                    className="form-input"
                                     value={formData.schedule}
                                     onChange={handleInputChange}
                                     placeholder="e.g., Mon, Wed, Fri 9:00 AM"
@@ -257,11 +265,12 @@ function MyClasses() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="students">Number of Students</label>
+                                <label htmlFor="students" className="form-label">Number of Students</label>
                                 <input
                                     type="number"
                                     id="students"
                                     name="students"
+                                    className="form-input"
                                     value={formData.students}
                                     onChange={handleInputChange}
                                     placeholder="e.g., 30"
