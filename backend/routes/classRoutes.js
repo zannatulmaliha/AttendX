@@ -4,14 +4,9 @@ const Class = require('../models/Class');
 const authMiddleware = require('../middleware/authMiddleware');
 const rbacMiddleware = require('../middleware/rbacMiddleware');
 
-<<<<<<< HEAD
 // Protect all routes
 router.use(authMiddleware);
 
-=======
-// Protect all routes in this file
-router.use(authMiddleware);
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
 // Only teachers and admins can manage classes
 router.use(rbacMiddleware(['teacher', 'admin']));
 

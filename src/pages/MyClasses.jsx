@@ -111,11 +111,7 @@ function MyClasses() {
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
-<<<<<<< HEAD
                     'Authorization': `Bearer ${token}`
-=======
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                 }
             })
 

@@ -1,29 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const Attendance = require('../models/Attendance');
-<<<<<<< HEAD
 const Class = require('../models/Class');
 const authMiddleware = require('../middleware/authMiddleware');
 const rbacMiddleware = require('../middleware/rbacMiddleware');
 const jwt = require('jsonwebtoken');
 
 // Protect all routes
-=======
-const authMiddleware = require('../middleware/authMiddleware');
-const rbacMiddleware = require('../middleware/rbacMiddleware');
-
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
 router.use(authMiddleware);
 
 // Get all attendance records (for testing/reports) - Teacher/Admin only
 router.get('/all', rbacMiddleware(['teacher', 'admin']), async (req, res) => {
     try {
         // Find classes owned by this teacher
-<<<<<<< HEAD
         const classes = await Class.find({ teacher: req.user.userId });
-=======
-        const classes = await require('../models/Class').find({ teacher: req.user.userId });
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
         const classIds = classes.map(c => c._id);
 
         // Find attendance for these classes
@@ -38,11 +28,7 @@ router.get('/all', rbacMiddleware(['teacher', 'admin']), async (req, res) => {
 router.get('/:classId', rbacMiddleware(['teacher', 'admin']), async (req, res) => {
     try {
         // Verify ownership
-<<<<<<< HEAD
         const classObj = await Class.findOne({ _id: req.params.classId, teacher: req.user.userId });
-=======
-        const classObj = await require('../models/Class').findOne({ _id: req.params.classId, teacher: req.user.userId });
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
         if (!classObj) {
             return res.status(403).json({ message: 'Access denied. Class not found or not owned by you.' });
         }
@@ -54,21 +40,8 @@ router.get('/:classId', rbacMiddleware(['teacher', 'admin']), async (req, res) =
     }
 });
 
-<<<<<<< HEAD
 // Generate Dynamic QR Token - Teacher only
 router.get('/qr-token/:classId', rbacMiddleware(['teacher', 'admin']), async (req, res) => {
-=======
-// Record attendance - Students and Teachers can do this
-router.post('/', async (req, res) => {
-    // TODO: Verify if the student ID matches the logged in user or if the user is a teacher
-    const record = new Attendance({
-        classId: req.body.classId,
-        studentName: req.body.studentName,
-        studentId: req.body.studentId,
-        status: req.body.status
-    });
-
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
     try {
         // Verify ownership
         const classObj = await Class.findOne({ _id: req.params.classId, teacher: req.user.userId });
