@@ -16,7 +16,12 @@ function QRGenerator() {
     const fetchClasses = async () => {
         try {
             setLoading(true)
-            const response = await fetch('http://localhost:5000/api/classes')
+            const token = localStorage.getItem('token')
+            const response = await fetch('http://localhost:5000/api/classes', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             if (!response.ok) throw new Error('Failed to fetch classes')
             const data = await response.json()
             setClasses(data)

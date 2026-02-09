@@ -1,11 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const Class = require('../models/Class');
+const authMiddleware = require('../middleware/authMiddleware');
+const rbacMiddleware = require('../middleware/rbacMiddleware');
 
-// Get all classes
+// Protect all routes in this file
+router.use(authMiddleware);
+// Only teachers and admins can manage classes
+router.use(rbacMiddleware(['teacher', 'admin']));
+
+// Get all classes for the logged-in teacher
 router.get('/', async (req, res) => {
     try {
-        const classes = await Class.find();
+        const classes = await Class.find({ teacher: req.user.userId });
         res.json(classes);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -19,7 +26,8 @@ router.post('/', async (req, res) => {
         code: req.body.code,
         name: req.body.name,
         schedule: req.body.schedule,
-        students: req.body.students
+        students: req.body.students,
+        teacher: req.user.userId // Assign the logged-in teacher
     });
 
     try {
