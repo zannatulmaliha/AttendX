@@ -1,10 +1,18 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+<<<<<<< HEAD
 import { QrCode, User, GraduationCap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 function Register() {
     const [role, setRole] = useState('student')
+=======
+import { QrCode, User, GraduationCap, UserPlus } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+
+function Register() {
+    const [role, setRole] = useState('student') // 'student' or 'teacher'
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -16,6 +24,10 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+<<<<<<< HEAD
+=======
+
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
         try {
             await register(name, email, password, role)
             navigate(role === 'teacher' ? '/' : '/student-dashboard')
@@ -32,7 +44,11 @@ function Register() {
                         <QrCode size={32} />
                     </div>
                     <h1>Create Account</h1>
+<<<<<<< HEAD
                     <p>Sign up to start using AttendX</p>
+=======
+                    <p>Sign up for QR Attendance System</p>
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                 </div>
 
                 <div className="role-toggle">
@@ -70,7 +86,11 @@ function Register() {
                         <input
                             type="email"
                             className="form-input"
+<<<<<<< HEAD
                             placeholder="user@university.edu"
+=======
+                            placeholder={role === 'student' ? 'student@university.edu' : 'teacher@university.edu'}
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -95,7 +115,11 @@ function Register() {
                     </button>
                 </form>
 
+<<<<<<< HEAD
                 <div className="demo-credentials" style={{ marginTop: '10px', paddingTop: '10px', borderTop: 'none' }}>
+=======
+                <div className="demo-credentials" style={{ marginTop: '20px', paddingTop: '16px' }}>
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                     <p>
                         Already have an account? <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: '600' }}>Sign In</Link>
                     </p>

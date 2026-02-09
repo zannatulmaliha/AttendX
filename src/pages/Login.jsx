@@ -20,8 +20,23 @@ function Login() {
 
             // Validation: Check if the authenticated user's role matches the selected tab
             if (data.user.role !== role) {
+<<<<<<< HEAD
                 localStorage.removeItem('token')
                 localStorage.removeItem('user')
+=======
+                // If trying to login as Student but account is Teacher, or vice versa
+                // We need to logout immediately to clear the session
+                // We can't use the logout function from useAuth because we are in the middle of a function
+                // But we can clear localStorage and throw an error which will be caught below
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                // We also need to update the state in AuthContext, but we can't easily do that here without exposing a reset function
+                // Instead, let's just reload the page or rely on the error message
+                // Actually, calling logout() from useAuth might work if it doesn't cause a re-render race condition
+                // But since login() sets the user state, we are already authenticated in context.
+
+                // Better approach: Throw error and let the user try again
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                 throw new Error(`Account exists but is registered as a ${data.user.role}. Please switch to the ${data.user.role === 'student' ? 'Student' : 'Teacher'} tab.`)
             }
 
@@ -32,10 +47,19 @@ function Login() {
                 navigate('/')
             }
         } catch (err) {
+<<<<<<< HEAD
             if (localStorage.getItem('token')) {
                 localStorage.removeItem('token')
                 localStorage.removeItem('user')
                 window.location.reload()
+=======
+            // Ensure we are logged out if we throw an error after successful login
+            if (localStorage.getItem('token')) {
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                // We might need to force a context update, but for now this clears persistence
+                window.location.reload() // Brute force ensuring state is clear
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
             }
             setError(err.message || 'Failed to login')
         }

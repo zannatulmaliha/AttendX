@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
+<<<<<<< HEAD
         const userRole = role || 'student';
         if (!['student', 'teacher'].includes(userRole)) {
             return res.status(400).json({ message: 'Invalid role' });
@@ -15,6 +16,23 @@ router.post('/register', async (req, res) => {
         const user = new User({ name, email, password, role: userRole });
         await user.save();
 
+=======
+
+        // Default role is student if not specified, but we allow specifying 'teacher'
+        const userRole = role || 'student';
+
+        // Simple validation: only allow 'student' or 'teacher' for now
+        if (!['student', 'teacher'].includes(userRole)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        const user = new User({ name, email, password, role: userRole });
+        await user.save();
+
+        // Generate token immediately after registration? Or require login?
+        // Let's require login for now to keep it simple, or return token.
+        // Returning token is better UX.
+>>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
         const token = jwt.sign(
             { userId: user._id, role: user.role },
             process.env.JWT_SECRET || 'your_jwt_secret',
@@ -36,6 +54,7 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
