@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState, useEffect, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { CheckCircle, XCircle, Camera, LogOut } from 'lucide-react'
@@ -157,23 +156,6 @@ function StudentDashboard() {
                             )}
                         </div>
                     )}
-=======
-import { QrCode } from 'lucide-react'
-
-function StudentDashboard() {
-    return (
-        <div style={{ padding: '24px' }}>
-            <div className="card">
-                <div className="card-header">
-                    <h2 className="card-title">Student Dashboard</h2>
-                    <p className="card-description">Welcome to your student portal</p>
-                </div>
-
-                <div className="qr-placeholder-box">
-                    <QrCode className="qr-icon" />
-                    <p>Scan a QR code to mark attendance</p>
-                    {/* In a real app, this would open the camera */}
->>>>>>> f46442d5f434df5fa94ac4cfe00ce7befdf87f61
                 </div>
             </div>
         </div>
