@@ -35,17 +35,20 @@ label {
     color: #cccccc;
 }
 
-input, select {
+input,
+select {
     width: 100%;
     padding: 10px;
     background-color: #333;
     border: 1px solid #444;
     border-radius: 5px;
     color: #fff;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    box-sizing: border-box;
+    /* Ensures padding doesn't affect width */
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: #007bff;
 }
@@ -93,4 +96,64 @@ button:hover {
 
 .error {
     color: #dc3545;
+}
+
+.attendance-container {
+    max-width: 600px;
+    width: 600px;
+}
+
+.attendance-list {
+    margin-top: 20px;
+    text-align: left;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.attendance-card {
+    background: #333;
+    border: 1px solid #444;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.attendance-details h3 {
+    margin: 0 0 5px 0;
+    color: #007bff;
+    font-size: 1.1em;
+}
+
+.attendance-details p {
+    margin: 0;
+    color: #cccccc;
+    font-size: 0.9em;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.status-present {
+    background-color: #28a745;
+}
+
+.status-absent {
+    background-color: #dc3545;
+}
+
+.logout-btn {
+    background-color: #6c757d;
+    margin-top: 20px;
+}
+
+.logout-btn:hover {
+    background-color: #5a6268;
 }
