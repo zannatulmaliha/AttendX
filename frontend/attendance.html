@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attendance - Status</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container attendance-container">
+        <h1>My Attendance</h1>
+        <div id="student-info">
+            <!-- Student info will be populated here -->
+        </div>
+        <div class="attendance-list" id="attendance-list">
+            <!-- Attendance records will be populated here -->
+            <p>Loading attendance...</p>
+        </div>
+        <div class="link">
+            <button onclick="logout()" class="logout-btn">Sign Out</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('student-info').innerHTML = `
+                <p><strong>Student:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+            `;
+
+            fetchAttendance();
+            // Poll every 5 seconds
+            setInterval(fetchAttendance, 5000);
+        });
+    </script>
+</body>
+
+</html>
