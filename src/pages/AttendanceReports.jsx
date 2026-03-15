@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CalendarOff } from 'lucide-react'
+import { BASE_URL } from '../config'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -34,7 +35,7 @@ function AttendanceReports() {
         try {
             setLoading(true)
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:5000/api/attendance/all', {
+            const response = await fetch(`${BASE_URL}/api/attendance/all`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

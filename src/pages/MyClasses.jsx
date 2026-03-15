@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Plus, Users, Calendar, QrCode, X, Trash2 } from 'lucide-react'
+import { BASE_URL } from '../config'
 
 function MyClasses() {
     const [classes, setClasses] = useState([])
@@ -22,7 +23,7 @@ function MyClasses() {
         try {
             setLoading(true)
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:5000/api/classes', {
+            const response = await fetch(`${BASE_URL}/api/classes`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -62,7 +63,7 @@ function MyClasses() {
         e.preventDefault()
 
         try {
-            const response = await fetch('http://localhost:5000/api/classes', {
+            const response = await fetch(`${BASE_URL}/api/classes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ function MyClasses() {
         console.log('User confirmed deletion, sending DELETE request...')
 
         try {
-            const url = `http://localhost:5000/api/classes/${classId}`
+            const url = `${BASE_URL}/api/classes/${classId}`
             console.log('DELETE URL:', url)
 
             const token = localStorage.getItem('token')

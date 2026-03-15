@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { CheckCircle, XCircle, Camera, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { BASE_URL } from '../config'
 
 function StudentDashboard() {
     const { user, logout } = useAuth()
@@ -58,7 +59,7 @@ function StudentDashboard() {
 
         try {
             const authToken = localStorage.getItem('token')
-            const response = await fetch('http://localhost:5000/api/attendance/mark', {
+            const response = await fetch(`${BASE_URL}/api/attendance/mark`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

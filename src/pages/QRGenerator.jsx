@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { QrCode, ScanLine, AlertCircle } from 'lucide-react'
 import { QRCodeCanvas } from 'qrcode.react'
+import { BASE_URL } from '../config'
 
 function QRGenerator() {
     const [classes, setClasses] = useState([])
@@ -21,7 +22,7 @@ function QRGenerator() {
         try {
             setLoading(true)
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:5000/api/classes', {
+            const response = await fetch(`${BASE_URL}/api/classes`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -46,7 +47,7 @@ function QRGenerator() {
 
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch(`http://localhost:5000/api/attendance/qr-token/${selectedClass._id || selectedClass.id}`, {
+            const response = await fetch(`${BASE_URL}/api/attendance/qr-token/${selectedClass._id || selectedClass.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
