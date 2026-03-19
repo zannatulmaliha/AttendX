@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
-import { CheckCircle, XCircle, Camera, LogOut, BookOpen, Clock, Calendar, CheckSquare, Zap, Target, Award, Play } from 'lucide-react'
+import { CheckCircle, XCircle, Camera, BookOpen, Clock, Calendar, CheckSquare, Zap, Target, Award, Play } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { BASE_URL } from '../config'
 
@@ -168,10 +168,6 @@ function StudentDashboard() {
                         <p>{user?.email || 'student@demo.com'}</p>
                     </div>
                 </div>
-                <button onClick={logout} className="logout-btn-styled">
-                    <LogOut size={16} />
-                    Logout
-                </button>
             </header>
 
             {/* Stats Grid */}
