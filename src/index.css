@@ -1001,3 +1001,94 @@ header {
     color: #991b1b;
     border: 1px solid #fecaca;
 }
+
+/* --- Teacher Dashboard Styles --- */
+.teacher-container {
+    background: linear-gradient(135deg, #f8f5ff 0%, #fff1f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.teacher-header {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    margin-bottom: 2rem;
+}
+
+.teacher-header .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-box {
+    width: 48px;
+    height: 48px;
+    background: #9333ea;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.teacher-title {
+    font-size: 1.25rem !important;
+    font-weight: 700;
+    color: #9333ea !important;
+    margin: 0;
+}
+
+.teacher-email {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Nav Pills */
+.nav-pills {
+    display: inline-flex;
+    background: white;
+    padding: 8px;
+    border-radius: 20px;
+    gap: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.nav-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-pill:hover {
+    background: #f3f4f6;
+}
+
+.nav-pill.active {
+    color: #111827;
+    font-weight: 600;
+}
+
+.nav-pill.active svg {
+    color: #111827;
+}
+
+.nav-pill svg {
+    color: #6b7280;
+}
+
+.teacher-main {
+    display: block;
+}
