@@ -72,7 +72,7 @@ function QRGenerator() {
         fetchQrToken() // Fetch immediately
         // Fetch every 3 seconds (3000ms)
         // Since token expires in 10s, 3s refresh gives plenty of overlap
-        intervalRef.current = setInterval(fetchQrToken, 3000)
+        intervalRef.current = setInterval(fetchQrToken, 120000)
     }
 
     const stopGeneration = () => {
@@ -182,7 +182,7 @@ function QRGenerator() {
                         {isGenerating && (
                             <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: '#16a34a' }}>
                                 <div className="pulse-dot"></div>
-                                Live: Updating every 3 seconds
+                                Live: Updating every 2 min
                             </div>
                         )}
                     </>

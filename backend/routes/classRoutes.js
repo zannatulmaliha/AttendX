@@ -8,6 +8,17 @@ const rbacMiddleware = require('../middleware/rbacMiddleware');
 // Protect all routes
 router.use(authMiddleware);
 
+// Get all classes (available to any authenticated user, e.g. for students selecting leave)
+router.get('/all', async (req, res) => {
+    try {
+        // Fetch classes and populate teacher's name
+        const classes = await Class.find().populate('teacher', 'name');
+        res.json(classes);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Only teachers and admins can manage classes
 router.use(rbacMiddleware(['teacher', 'admin']));
 

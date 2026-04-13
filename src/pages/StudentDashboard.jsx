@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
-import { CheckCircle, XCircle, Camera, BookOpen, Clock, Calendar, CheckSquare, Zap, Target, Award, Play } from 'lucide-react'
+import { CheckCircle, XCircle, Camera, BookOpen, Clock, Calendar, CheckSquare, Zap, Target, Award, Play, FileText, Send } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { BASE_URL } from '../config'
 
@@ -11,6 +11,13 @@ function StudentDashboard() {
     const [message, setMessage] = useState(null)
     const [status, setStatus] = useState(null) // 'success' or 'error'
     const scannerRef = useRef(null)
+
+    // Leave request state
+    const [classes, setClasses] = useState([])
+    const [leaveRequests, setLeaveRequests] = useState([])
+    const [leaveForm, setLeaveForm] = useState({ classId: '', date: '', reason: '' })
+    const [leaveMessage, setLeaveMessage] = useState(null)
+    const [leaveStatus, setLeaveStatus] = useState(null)
 
     // New state for stats
     const [stats, setStats] = useState({
@@ -46,6 +53,71 @@ function StudentDashboard() {
     useEffect(() => {
         fetchStats()
     }, [])
+
+    // Fetch classes and student's leave requests
+    useEffect(() => {
+        const fetchLeavesAndClasses = async () => {
+            try {
+                const token = localStorage.getItem('token')
+                const classRes = await fetch(`${BASE_URL}/api/classes/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (classRes.ok) {
+                    const classData = await classRes.json()
+                    setClasses(classData)
+                }
+
+                const leavesRes = await fetch(`${BASE_URL}/api/leaves/student`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (leavesRes.ok) {
+                    const leavesData = await leavesRes.json()
+                    setLeaveRequests(leavesData)
+                }
+            } catch (err) {
+                console.error("Failed to fetch leaves/classes", err)
+            }
+        }
+        fetchLeavesAndClasses()
+    }, [])
+
+    const handleLeaveSubmit = async (e) => {
+        e.preventDefault()
+        setLeaveMessage('Submitting request...')
+        setLeaveStatus('loading')
+        
+        try {
+            const token = localStorage.getItem('token')
+            const response = await fetch(`${BASE_URL}/api/leaves`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(leaveForm)
+            })
+            
+            if (response.ok) {
+                setLeaveStatus('success')
+                setLeaveMessage('Leave request submitted successfully')
+                setLeaveForm({ classId: '', date: '', reason: '' })
+                const leavesRes = await fetch(`${BASE_URL}/api/leaves/student`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (leavesRes.ok) {
+                    const leavesData = await leavesRes.json()
+                    setLeaveRequests(leavesData)
+                }
+                setTimeout(() => { setLeaveMessage(null); setLeaveStatus(null) }, 3000)
+            } else {
+                throw new Error('Failed to submit leave request')
+            }
+        } catch (err) {
+            setLeaveStatus('error')
+            setLeaveMessage('Error: ' + err.message)
+            setTimeout(() => { setLeaveMessage(null); setLeaveStatus(null) }, 3000)
+        }
+    }
 
     useEffect(() => {
         if (isScanning && !scannerRef.current) {
@@ -325,6 +397,102 @@ function StudentDashboard() {
                                 No recent attendance records found.
                             </div>
                         )}
+                    </div>
+                </div>
+
+                {/* Leave Requests Panel */}
+                <div className="panel-card" style={{ gridColumn: '1 / -1' }}>
+                    <div className="panel-header">
+                        <FileText size={20} />
+                        <h3>Leave Requests</h3>
+                    </div>
+                    <p className="panel-subtitle">Request a leave of absence for an upcoming class</p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                        {/* Leave Request Form */}
+                        <div>
+                            <form onSubmit={handleLeaveSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#f9fafb', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.9rem' }}>Select Class</label>
+                                    <select 
+                                        required 
+                                        value={leaveForm.classId} 
+                                        onChange={(e) => setLeaveForm({...leaveForm, classId: e.target.value})}
+                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', background: 'white' }}
+                                    >
+                                        <option value="" disabled>Select a class...</option>
+                                        {classes.map(c => (
+                                            <option key={c._id} value={c._id}>{c.code} - {c.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.9rem' }}>Date</label>
+                                    <input 
+                                        type="date" 
+                                        required 
+                                        value={leaveForm.date} 
+                                        onChange={(e) => setLeaveForm({...leaveForm, date: e.target.value})}
+                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db' }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.9rem' }}>Reason</label>
+                                    <textarea 
+                                        required 
+                                        rows="3" 
+                                        placeholder="Briefly explain your reason for absence..."
+                                        value={leaveForm.reason} 
+                                        onChange={(e) => setLeaveForm({...leaveForm, reason: e.target.value})}
+                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', resize: 'vertical' }}
+                                    ></textarea>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    style={{ padding: '0.75rem', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                                    disabled={leaveStatus === 'loading'}
+                                >
+                                    <Send size={16} />
+                                    {leaveStatus === 'loading' ? 'Submitting...' : 'Submit Request'}
+                                </button>
+                                
+                                {leaveMessage && (
+                                    <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: leaveStatus === 'error' ? '#ef4444' : '#10b981', textAlign: 'center', fontWeight: '500' }}>
+                                        {leaveMessage}
+                                    </div>
+                                )}
+                            </form>
+                        </div>
+
+                        {/* Recent Requests List */}
+                        <div>
+                            <h4 style={{ marginBottom: '1rem', color: '#374151', fontSize: '1.05rem' }}>My Recent Requests</h4>
+                            {leaveRequests.length === 0 ? (
+                                <div style={{ background: '#f9fafb', padding: '2rem', borderRadius: '12px', border: '1px dashed #d1d5db', textAlign: 'center', color: '#6b7280' }}>
+                                    You haven't submitted any leave requests yet.
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '400px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                                    {leaveRequests.map(req => (
+                                        <div key={req._id} style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                                                <div>
+                                                    <div style={{ fontWeight: '600', color: '#111827' }}>{req.classId?.code}</div>
+                                                    <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{formatDate(req.date)}</div>
+                                                </div>
+                                                {req.status === 'Pending' && <span style={{ background: '#fef3c7', color: '#d97706', padding: '0.25rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> Pending</span>}
+                                                {req.status === 'Approved' && <span style={{ background: '#d1fae5', color: '#059669', padding: '0.25rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12} /> Approved</span>}
+                                                {req.status === 'Rejected' && <span style={{ background: '#fee2e2', color: '#dc2626', padding: '0.25rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><XCircle size={12} /> Rejected</span>}
+                                            </div>
+                                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#4b5563', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>"{req.reason}"</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

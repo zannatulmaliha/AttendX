@@ -45,7 +45,7 @@ router.get('/qr-token/:classId', rbacMiddleware(['teacher', 'admin']), async (re
     try {
         // Verify ownership
         const classObj = await Class.findOne({ _id: req.params.classId, teacher: req.user.userId });
-        if (!classObj) {
+        if (!classObj) { const records = await Attendance.find({ classId: { $in: classIds } }).populate('classId');
             return res.status(403).json({ message: 'Access denied. Class not found or not owned by you.' });
         }
 
@@ -61,7 +61,7 @@ router.get('/qr-token/:classId', rbacMiddleware(['teacher', 'admin']), async (re
         const token = jwt.sign(
             payload,
             process.env.JWT_SECRET || 'your_jwt_secret',
-            { expiresIn: '10s' }
+            { expiresIn: '120s' }
         );
 
         res.json({ token });
