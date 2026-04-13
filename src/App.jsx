@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import StudentDashboard from './pages/StudentDashboard'
 import LeaveApprovals from './pages/LeaveApprovals'
+import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -63,6 +64,14 @@ function App() {
                                     <StudentDashboard />
                                 </Layout>
                             }
+                        />
+                    </Route>
+
+                    {/* Admin Routes */}
+                    <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                        <Route
+                            path="/admin"
+                            element={<AdminDashboard />}
                         />
                     </Route>
 
