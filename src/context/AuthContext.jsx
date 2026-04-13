@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch(`${BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -55,6 +55,10 @@ export const AuthProvider = ({ children }) => {
 
             if (!response.ok) {
                 throw new Error(data.message || 'Registration failed')
+            }
+
+            if (data.requiresVerification) {
+                return data;
             }
 
             // Automatically login after register
