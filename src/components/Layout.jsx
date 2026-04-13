@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { QrCode, LogOut, BarChart2, Users, TrendingUp, Calendar, Radio } from 'lucide-react'
+import { QrCode, LogOut, BarChart2, Users, TrendingUp, Calendar, Radio, CheckSquare } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { BASE_URL } from '../config'
 
@@ -146,9 +146,9 @@ function Layout({ children }) {
                 <Link to="/classes" className={`nav-pill ${isActive('/classes') ? 'active' : ''}`}>
                     <Calendar size={16} /> My Classes
                 </Link>
-                <div className="nav-pill">
-                    <Users size={16} /> Students
-                </div>
+                <Link to="/leaves" className={`nav-pill ${isActive('/leaves') ? 'active' : ''}`}>
+                    <CheckSquare size={16} /> Approvals
+                </Link>
             </nav>
 
             {/* Main Content */}

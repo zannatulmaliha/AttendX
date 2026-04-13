@@ -6,6 +6,7 @@ import AttendanceReports from './pages/AttendanceReports'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import StudentDashboard from './pages/StudentDashboard'
+import LeaveApprovals from './pages/LeaveApprovals'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -40,6 +41,14 @@ function App() {
                             element={
                                 <Layout>
                                     <AttendanceReports />
+                                </Layout>
+                            }
+                        />
+                        <Route
+                            path="/leaves"
+                            element={
+                                <Layout>
+                                    <LeaveApprovals />
                                 </Layout>
                             }
                         />
