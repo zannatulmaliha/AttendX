@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { QrCode, User, GraduationCap } from 'lucide-react'
+import { QrCode, User, GraduationCap, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 function Login() {
@@ -19,14 +19,16 @@ function Login() {
             const data = await login(email, password)
 
             // Validation: Check if the authenticated user's role matches the selected tab
-            if (data.user.role !== role) {
+            if (data.user.role !== role && data.user.role !== 'admin') {
                 localStorage.removeItem('token')
                 localStorage.removeItem('user')
                 throw new Error(`Account exists but is registered as a ${data.user.role}. Please switch to the ${data.user.role === 'student' ? 'Student' : 'Teacher'} tab.`)
             }
 
             // Redirect based on role
-            if (data.user.role === 'student') {
+            if (data.user.role === 'admin') {
+                navigate('/admin')
+            } else if (data.user.role === 'student') {
                 navigate('/student-dashboard')
             } else {
                 navigate('/')
@@ -65,6 +67,12 @@ function Login() {
                     >
                         Teacher
                     </button>
+                    <button
+                        className={`toggle-btn ${role === 'admin' ? 'active' : ''}`}
+                        onClick={() => setRole('admin')}
+                    >
+                        Admin
+                    </button>
                 </div>
 
                 {error && <div className="error-message" style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</div>}
@@ -72,12 +80,12 @@ function Login() {
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label className="form-label">
-                            {role === 'student' ? 'Student Email' : 'Teacher Email'}
+                            {role === 'student' ? 'Student Email' : role === 'teacher' ? 'Teacher Email' : 'Admin Email'}
                         </label>
                         <input
                             type="email"
                             className="form-input"
-                            placeholder={role === 'student' ? 'student@university.edu' : 'teacher@university.edu'}
+                            placeholder={role === 'student' ? 'student@university.edu' : role === 'teacher' ? 'teacher@university.edu' : 'admin@attendx.com'}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -97,8 +105,8 @@ function Login() {
                     </div>
 
                     <button type="submit" className="btn-primary full-width">
-                        {role === 'student' ? <User size={18} /> : <GraduationCap size={18} />}
-                        Sign In as {role === 'student' ? 'Student' : 'Teacher'}
+                        {role === 'student' ? <User size={18} /> : role === 'teacher' ? <GraduationCap size={18} /> : <ShieldCheck size={18} />}
+                        Sign In as {role === 'student' ? 'Student' : role === 'teacher' ? 'Teacher' : 'Admin'}
                     </button>
                 </form>
 
