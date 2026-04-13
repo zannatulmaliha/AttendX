@@ -49,7 +49,7 @@ router.get('/qr-token/:classId', rbacMiddleware(['teacher', 'admin']), async (re
             return res.status(403).json({ message: 'Access denied. Class not found or not owned by you.' });
         }
 
-        // Generate a short-lived token (10 seconds)
+        // Generate a short-lived token (60 seconds)
         const payload = {
             classId: classObj._id,
             nonce: Math.random().toString(36).substring(7), // Random nonce to ensure uniqueness
@@ -61,7 +61,7 @@ router.get('/qr-token/:classId', rbacMiddleware(['teacher', 'admin']), async (re
         const token = jwt.sign(
             payload,
             process.env.JWT_SECRET || 'your_jwt_secret',
-            { expiresIn: '120s' }
+            { expiresIn: '60s' }
         );
 
         res.json({ token });
@@ -83,7 +83,9 @@ router.post('/mark', rbacMiddleware(['student']), async (req, res) => {
         let decoded;
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+            require('fs').appendFileSync('jwt_debug.txt', `Decoded: ${JSON.stringify(decoded)}\n`);
         } catch (err) {
+            require('fs').appendFileSync('jwt_debug.txt', `Error: ${err.message} | Token: ${token}\n`);
             return res.status(400).json({ message: 'Invalid or expired QR code. Please scan again.' });
         }
 
@@ -138,6 +140,13 @@ router.post('/mark', rbacMiddleware(['student']), async (req, res) => {
         });
 
         await newRecord.save();
+
+        // Broadcast real-time update to the teacher's dashboard
+        req.app.get('io').to(`class_${classId}`).emit('attendanceMarked', {
+            studentName: student.name,
+            time: newRecord.date,
+            _id: newRecord._id
+        });
 
         res.status(201).json({ message: 'Attendance marked successfully', record: newRecord });
 
