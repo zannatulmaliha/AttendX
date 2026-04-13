@@ -5,6 +5,7 @@ import MyClasses from './pages/MyClasses'
 import AttendanceReports from './pages/AttendanceReports'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import VerifyEmail from './pages/VerifyEmail'
 import StudentDashboard from './pages/StudentDashboard'
 import LeaveApprovals from './pages/LeaveApprovals'
 import AdminDashboard from './pages/AdminDashboard'
@@ -18,6 +19,7 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
                     {/* Teacher Routes */}
                     <Route element={<ProtectedRoute allowedRoles={['teacher', 'admin']} />}>

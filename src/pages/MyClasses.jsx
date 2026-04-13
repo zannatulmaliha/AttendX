@@ -9,7 +9,8 @@ function MyClasses() {
         code: '',
         name: '',
         schedule: '',
-        students: 0
+        students: 0,
+        allowedDomain: ''
     })
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -51,7 +52,7 @@ function MyClasses() {
 
     const handleCloseModal = () => {
         setShowModal(false)
-        setFormData({ code: '', name: '', schedule: '', students: 0 })
+        setFormData({ code: '', name: '', schedule: '', students: 0, allowedDomain: '' })
     }
 
     const handleInputChange = (e) => {
@@ -73,7 +74,8 @@ function MyClasses() {
                     code: formData.code,
                     name: formData.name,
                     schedule: formData.schedule,
-                    students: parseInt(formData.students) || 0
+                    students: parseInt(formData.students) || 0,
+                    allowedDomain: formData.allowedDomain
                 })
             })
 
@@ -274,6 +276,22 @@ function MyClasses() {
                                     min="0"
                                     required
                                 />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="allowedDomain" className="form-label">Allowed Email Domain (Optional)</label>
+                                <input
+                                    type="text"
+                                    id="allowedDomain"
+                                    name="allowedDomain"
+                                    className="form-input"
+                                    value={formData.allowedDomain}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., student.univ.edu"
+                                />
+                                <small style={{ color: '#6b7280', display: 'block', marginTop: '4px' }}>
+                                    Only students with this email domain can mark attendance. Leave blank for no restriction.
+                                </small>
                             </div>
 
                             <div className="modal-actions">

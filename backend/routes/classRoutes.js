@@ -69,6 +69,7 @@ router.post('/', async (req, res) => {
         name: req.body.name,
         schedule: req.body.schedule,
         students: req.body.students,
+        allowedDomain: req.body.allowedDomain,
         teacher: req.user.userId // Assign the logged-in teacher
     });
 

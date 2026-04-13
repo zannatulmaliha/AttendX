@@ -9,6 +9,7 @@ function Register() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
 
     const { register } = useAuth()
     const navigate = useNavigate()
@@ -16,8 +17,13 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setSuccessMessage('')
         try {
-            await register(name, email, password, role)
+            const data = await register(name, email, password, role)
+            if (data?.requiresVerification) {
+                setSuccessMessage(data.message)
+                return
+            }
             navigate(role === 'teacher' ? '/' : '/student-dashboard')
         } catch (err) {
             setError(err.message || 'Failed to register')
@@ -50,7 +56,8 @@ function Register() {
                     </button>
                 </div>
 
-                {error && <div className="error-message" style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</div>}
+                {error && <div className="error-message" style={{ color: 'var(--danger-color)', textAlign: 'center', marginBottom: '10px' }}>{error}</div>}
+                {successMessage && <div className="success-message" style={{ color: 'var(--success-color)', textAlign: 'center', marginBottom: '10px' }}>{successMessage}</div>}
 
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">

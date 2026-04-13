@@ -5,6 +5,7 @@ const classSchema = new mongoose.Schema({
     name: { type: String, required: true },
     schedule: { type: String, required: true },
     students: { type: Number, default: 0 },
+    allowedDomain: { type: String, required: false },
     teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 

@@ -89,6 +89,20 @@ router.post('/mark', rbacMiddleware(['student']), async (req, res) => {
 
         const { classId } = decoded;
 
+        const classObj = await Class.findById(classId);
+        if (!classObj) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+
+        const student = await require('../models/User').findById(req.user.userId);
+        
+        if (classObj.allowedDomain) {
+            const studentDomain = student.email.split('@')[1];
+            if (studentDomain !== classObj.allowedDomain) {
+                return res.status(403).json({ message: `Your email domain (@${studentDomain}) does not match the permitted domain for this class (@${classObj.allowedDomain}).` });
+            }
+        }
+
         // Check if student already marked attendance for this class today
         // For simplicity, we assume one attendance per class per day? 
         // Or just check if they are already in the list for this session?
@@ -113,10 +127,7 @@ router.post('/mark', rbacMiddleware(['student']), async (req, res) => {
         }
 
         // Create new attendance record
-        // We need student name. We can fetch it from User model or just use ID if name is not critical for now.
-        // The current Attendance model expects studentName.
-        // Let's fetch the user to get the name.
-        const student = await require('../models/User').findById(req.user.userId);
+        // The student object is already fetched above.
 
         const newRecord = new Attendance({
             classId: classId,

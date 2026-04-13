@@ -124,7 +124,11 @@ function StudentDashboard() {
             // Initialize scanner
             const scanner = new Html5QrcodeScanner(
                 "reader",
-                { fps: 10, qrbox: { width: 250, height: 250 } },
+                { 
+                    fps: 10, 
+                    qrbox: { width: 250, height: 250 },
+                    rememberLastUsedCamera: false
+                },
                 false
             )
 
