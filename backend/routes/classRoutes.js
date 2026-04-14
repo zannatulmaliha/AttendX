@@ -70,6 +70,7 @@ router.post('/', async (req, res) => {
         schedule: req.body.schedule,
         students: req.body.students,
         allowedDomain: req.body.allowedDomain,
+        geofence: req.body.geofence,
         teacher: req.user.userId // Assign the logged-in teacher
     });
 
@@ -78,6 +79,29 @@ router.post('/', async (req, res) => {
         res.status(201).json(savedClass);
     } catch (err) {
         res.status(400).json({ message: err.message });
+    }
+});
+
+// Update a class (configuration settings)
+router.put('/:id', async (req, res) => {
+    try {
+        const updatedClass = await Class.findOneAndUpdate(
+            { _id: req.params.id, teacher: req.user.userId },
+            { 
+                $set: {
+                    allowedDomain: req.body.allowedDomain,
+                    geofence: req.body.geofence
+                }
+            },
+            { new: true }
+        );
+
+        if (!updatedClass) {
+            return res.status(404).json({ message: 'Class not found or unauthorized' });
+        }
+        res.json(updatedClass);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 

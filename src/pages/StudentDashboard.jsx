@@ -156,15 +156,33 @@ function StudentDashboard() {
         setIsScanning(false)
         setScanResult(decodedText)
 
-        // Submit attendance
-        markAttendance(decodedText)
+        // Request location first, then submit attendance
+        setMessage('Verifying location...')
+        setStatus('loading')
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    markAttendance(decodedText, position.coords.latitude, position.coords.longitude)
+                },
+                (error) => {
+                    console.error("Location error:", error)
+                    setStatus('error')
+                    setMessage('Location access is absolutely required to mark attendance securely.')
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            )
+        } else {
+            console.warn("Geolocation not supported by browser.")
+            markAttendance(decodedText)
+        }
     }
 
     const onScanFailure = (error) => {
         // console.warn(`Code scan error = ${error}`)
     }
 
-    const markAttendance = async (token) => {
+    const markAttendance = async (token, latitude = undefined, longitude = undefined) => {
         setMessage('Processing attendance...')
         setStatus('loading')
 
@@ -176,7 +194,7 @@ function StudentDashboard() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({ token })
+                body: JSON.stringify({ token, latitude, longitude })
             })
 
             const data = await response.json()
