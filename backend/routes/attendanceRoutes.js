@@ -6,6 +6,19 @@ const authMiddleware = require('../middleware/authMiddleware');
 const rbacMiddleware = require('../middleware/rbacMiddleware');
 const jwt = require('jsonwebtoken');
 
+// Haversine formula to calculate distance between two lat/lng coordinates in meters
+function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // Radius of the earth in m
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2); 
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    return R * c; // Distance in m
+}
+
 // Protect all routes
 router.use(authMiddleware);
 
@@ -94,6 +107,23 @@ router.post('/mark', rbacMiddleware(['student']), async (req, res) => {
         const classObj = await Class.findById(classId);
         if (!classObj) {
             return res.status(404).json({ message: 'Class not found' });
+        }
+
+        // Geofencing Check
+        if (classObj.geofence && classObj.geofence.enabled) {
+            const { latitude, longitude } = req.body;
+            if (latitude === undefined || longitude === undefined) {
+                return res.status(400).json({ message: 'Location data is required for this class.' });
+            }
+            
+            const distance = getDistanceFromLatLonInM(
+                classObj.geofence.latitude, classObj.geofence.longitude,
+                latitude, longitude
+            );
+            
+            if (distance > classObj.geofence.radius) {
+                return res.status(403).json({ message: `You are mathematically outside the designated classroom perimeter. (Distance: ${Math.round(distance)}m > Radius: ${classObj.geofence.radius}m)` });
+            }
         }
 
         const student = await require('../models/User').findById(req.user.userId);

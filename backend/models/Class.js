@@ -6,6 +6,12 @@ const classSchema = new mongoose.Schema({
     schedule: { type: String, required: true },
     students: { type: Number, default: 0 },
     allowedDomain: { type: String, required: false },
+    geofence: {
+        enabled: { type: Boolean, default: false },
+        latitude: { type: Number },
+        longitude: { type: Number },
+        radius: { type: Number, default: 50 }
+    },
     teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
